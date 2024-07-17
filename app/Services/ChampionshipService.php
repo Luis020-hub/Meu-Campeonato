@@ -27,6 +27,8 @@ class ChampionshipService
 
         $teams = $this->teamRepository->findAll();
 
+        shuffle($teams);
+
         $quarterfinals = $this->simulateRound($teams, 4);
         $winners = array_column($quarterfinals, 'winner');
 
