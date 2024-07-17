@@ -11,7 +11,7 @@
             <input type="text" name="teams[]" id="team{{$i}}" required>
             <br>
         @endfor
-            <button type="submit">Simular Campeonato</button>
+        <button type="submit">Simular Campeonato</button>
     </form>
 </body>
 </html>
