@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ChampionshipService;
 use App\Repositories\TeamRepository;
+use App\Services\ScoreService;
 
 class ChampionshipController extends Controller
 {
@@ -11,7 +13,9 @@ class ChampionshipController extends Controller
 
     public function __construct()
     {
-        $this->championshipService = new ChampionshipService(new TeamRepository());
+        $teamRepository = new TeamRepository();
+        $scoreService = new ScoreService();
+        $this->championshipService = new ChampionshipService($teamRepository, $scoreService);
     }
 
     public function index()

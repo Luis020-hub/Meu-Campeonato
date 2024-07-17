@@ -5,14 +5,17 @@ namespace App\Services;
 use App\Domain\Team;
 use App\Domain\Game;
 use App\Repositories\TeamRepository;
+use App\Services\ScoreService;
 
 class ChampionshipService
 {
     private TeamRepository $teamRepository;
+    private ScoreService $scoreService;
 
-    public function __construct(TeamRepository $teamRepository)
+    public function __construct(TeamRepository $teamRepository, ScoreService $scoreService)
     {
         $this->teamRepository = $teamRepository;
+        $this->scoreService = $scoreService;
     }
 
     public function simulateChampionship(array $teams): array
@@ -38,8 +41,10 @@ class ChampionshipService
         for ($i = 0; $i < $numGames; $i++) {
             $team1 = array_shift($teams);
             $team2 = array_shift($teams);
-            $score1 = rand(0, 7);
-            $score2 = rand(0, 7);
+            $scores = $this->scoreService->generateScore();
+
+            $score1 = $scores[0];
+            $score2 = $scores[1];
 
             $game = new Game($team1, $team2, $score1, $score2);
             $games[] = $game;
