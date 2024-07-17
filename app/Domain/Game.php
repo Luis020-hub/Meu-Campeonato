@@ -38,6 +38,11 @@ class Game
         }
     }
 
+    public function getLoser(): Team
+    {
+        return $this->getWinner() === $this->team1 ? $this->team2 : $this->team1;
+    }
+
     public function getTeam1(): Team
     {
         return $this->team1;
@@ -65,6 +70,8 @@ class Game
             'team2' => $this->team2->getName(),
             'score1' => $this->score1,
             'score2' => $this->score2,
+            'winner' => $this->getWinner()->getName(),
+            'loser' => $this->getLoser()->getName(),
         ];
     }
 }

@@ -45,4 +45,14 @@ class Team
         $this->goalsConceded += $goals;
         $this->points -= $goals;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'points' => $this->points,
+            'goalsScored' => $this->goalsScored,
+            'goalsConceded' => $this->goalsConceded,
+        ];
+    }
 }

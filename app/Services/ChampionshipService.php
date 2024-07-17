@@ -18,22 +18,24 @@ class ChampionshipService
         $this->scoreService = $scoreService;
     }
 
-    public function simulateChampionship(array $teams): array
+    public function simulateChampionship(array $teamNames): array
     {
         $this->teamRepository->clear();
-        foreach ($teams as $team) {
-            $this->teamRepository->save(new Team($team));
-        }
 
-        $teams = $this->teamRepository->findAll();
+        $teams = [];
+        foreach ($teamNames as $teamName) {
+            $team = new Team($teamName);
+            $this->teamRepository->save($team);
+            $teams[] = $team;
+        }
 
         shuffle($teams);
 
         $quarterfinals = $this->simulateRound($teams, 4);
-        $winners = array_column($quarterfinals, 'winner');
+        $winners = array_map(fn ($game) => $this->teamRepository->findByName($game['winner']['name']), $quarterfinals);
 
         $semifinals = $this->simulateRound($winners, 2);
-        $winners = array_column($semifinals, 'winner');
+        $winners = array_map(fn ($game) => $this->teamRepository->findByName($game['winner']['name']), $semifinals);
 
         $final = $this->simulateRound($winners, 1);
 
@@ -55,15 +57,17 @@ class ChampionshipService
             }
             $team1 = array_shift($teams);
             $team2 = array_shift($teams);
-            $scores = $this->scoreService->generateScore();
 
+            $scores = $this->scoreService->generateScore();
             $score1 = $scores[0];
             $score2 = $scores[1];
 
             $game = new Game($team1, $team2, $score1, $score2);
+
             $games[] = [
                 'game' => $game->toArray(),
-                'winner' => $game->getWinner()
+                'winner' => $game->getWinner()->toArray(),
+                'loser' => $game->getLoser()->toArray()
             ];
 
             $teams[] = $game->getWinner();

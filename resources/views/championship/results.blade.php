@@ -9,6 +9,9 @@
         <h2>{{ ucfirst($roundName) }}</h2>
         @foreach($games as $gameData)
             <p>{{ $gameData['game']['team1'] }} {{ $gameData['game']['score1'] }} x {{ $gameData['game']['score2'] }} {{ $gameData['game']['team2'] }}</p>
+            <p>Perdedor: {{ $gameData['loser']['name'] }}</p>
+            <b>Vencedor: {{ $gameData['winner']['name'] }}</b>
+            <hr/>
         @endforeach
     @endforeach
 </body>

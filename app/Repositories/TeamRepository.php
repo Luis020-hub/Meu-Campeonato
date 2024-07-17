@@ -18,6 +18,16 @@ class TeamRepository
         return $this->teams;
     }
 
+    public function findByName(string $name): ?Team
+    {
+        foreach ($this->teams as $team) {
+            if ($team->getName() === $name) {
+                return $team;
+            }
+        }
+        return null;
+    }
+
     public function clear(): void
     {
         $this->teams = [];

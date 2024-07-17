@@ -45,15 +45,8 @@ class ChampionshipController extends Controller
 
         $rounds = $this->championshipService->simulateChampionship($teams);
 
-        $formattedRounds = [];
-        foreach ($rounds as $roundName => $games) {
-            $formattedRounds[$roundName] = array_map(function ($gameData) {
-                return $gameData['game'];
-            }, $games);
-        }
-
         if ($request->expectsJson()) {
-            return response()->json(['rounds' => $formattedRounds]);
+            return response()->json(['rounds' => $rounds]);
         }
 
         return view('championship.results', compact('rounds'));
