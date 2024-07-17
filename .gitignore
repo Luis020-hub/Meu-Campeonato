@@ -1,0 +1,54 @@
+# Node and npm
+/node_modules
+/npm-debug.log
+/yarn-error.log
+
+# Laravel specific
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+.env.testing
+.env.staging
+.env.local
+.env.development
+.env.dusk.local
+.env.dusk.testing
+.phpunit.cache
+.phpunit.result.cache
+.phpactor.json
+.phpstorm.meta.php
+/_ide_helper.php
+/_ide_helper_models.php
+Homestead.json
+Homestead.yaml
+auth.json
+nova
+
+# PHP tools
+/.phpunit.result.cache
+.phpunit.result.cache
+
+# IDEs and editors
+/.fleet
+/.idea
+/.vscode
+
+# Laravel storage
+/storage/debugbar
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/testing
+/storage/framework/views
+/storage/logs
+/storage/app/public
+
+# Public files
+/public/storage
+/public/mix-manifest.json
+/public/css/*.css
+/public/js/*.js
