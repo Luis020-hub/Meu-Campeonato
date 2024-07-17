@@ -15,7 +15,7 @@ class ChampionshipService
         $this->teamRepository = $teamRepository;
     }
 
-    public function simulatedChampionship(array $teams): array
+    public function simulateChampionship(array $teams): array
     {
         $this->teamRepository->clear();
         foreach ($teams as $team) {
@@ -24,15 +24,15 @@ class ChampionshipService
 
         $teams = $this->teamRepository->findAll();
         $rounds = [
-            'quarterfinals' => $this->simulatedRound($teams, 4),
-            'semifinals' => $this->simulatedRound($teams, 2),
-            'final' => $this->simulatedRound($teams, 1),
+            'quarterfinals' => $this->simulateRound($teams, 4),
+            'semifinals' => $this->simulateRound($teams, 2),
+            'final' => $this->simulateRound($teams, 1)
         ];
 
         return $rounds;
     }
 
-    private function simulatedRound(array $teams, int $numGames): array
+    private function simulateRound(array &$teams, int $numGames): array
     {
         $games = [];
         for ($i = 0; $i < $numGames; $i++) {
