@@ -7,8 +7,8 @@
     <h1>Resultados do Campeonato</h1>
     @foreach($rounds as $roundName => $games)
         <h2>{{ ucfirst($roundName) }}</h2>
-        @foreach($games as $game)
-            <p>{{ $game->getTeam1()->getName() }} {{ $game->getScore1() }} x {{ $game->getScore2() }} {{ $game->getTeam2()->getName() }}</p>
+        @foreach($games as $gameData)
+            <p>{{ $gameData['game']['team1'] }} {{ $gameData['game']['score1'] }} x {{ $gameData['game']['score2'] }} {{ $gameData['game']['team2'] }}</p>
         @endforeach
     @endforeach
 </body>

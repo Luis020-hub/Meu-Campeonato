@@ -57,4 +57,14 @@ class Game
     {
         return $this->score2;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'team1' => $this->team1->getName(),
+            'team2' => $this->team2->getName(),
+            'score1' => $this->score1,
+            'score2' => $this->score2,
+        ];
+    }
 }

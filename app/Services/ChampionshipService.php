@@ -26,10 +26,19 @@ class ChampionshipService
         }
 
         $teams = $this->teamRepository->findAll();
+
+        $quarterfinals = $this->simulateRound($teams, 4);
+        $winners = array_column($quarterfinals, 'winner');
+
+        $semifinals = $this->simulateRound($winners, 2);
+        $winners = array_column($semifinals, 'winner');
+
+        $final = $this->simulateRound($winners, 1);
+
         $rounds = [
-            'quarterfinals' => $this->simulateRound($teams, 4),
-            'semifinals' => $this->simulateRound($teams, 2),
-            'final' => $this->simulateRound($teams, 1)
+            'quarterfinals' => $quarterfinals,
+            'semifinals' => $semifinals,
+            'final' => $final
         ];
 
         return $rounds;
@@ -39,6 +48,9 @@ class ChampionshipService
     {
         $games = [];
         for ($i = 0; $i < $numGames; $i++) {
+            if (count($teams) < 2) {
+                break;
+            }
             $team1 = array_shift($teams);
             $team2 = array_shift($teams);
             $scores = $this->scoreService->generateScore();
@@ -47,10 +59,12 @@ class ChampionshipService
             $score2 = $scores[1];
 
             $game = new Game($team1, $team2, $score1, $score2);
-            $games[] = $game;
+            $games[] = [
+                'game' => $game->toArray(),
+                'winner' => $game->getWinner()
+            ];
 
-            $winner = $game->getWinner();
-            $teams[] = $winner;
+            $teams[] = $game->getWinner();
         }
         return $games;
     }
