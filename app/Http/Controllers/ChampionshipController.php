@@ -43,12 +43,12 @@ class ChampionshipController extends Controller
             return redirect('/')->withErrors($validationResult['message']);
         }
 
-        $rounds = $this->championshipService->simulateChampionship($teams);
+        $result = $this->championshipService->simulateChampionship($teams);
 
         if ($request->expectsJson()) {
-            return response()->json(['rounds' => $rounds]);
+            return response()->json($result);
         }
 
-        return view('championship.results', ['rounds' => $rounds]);
+        return view('championship.results', ['rounds' => $result['rounds'], 'ranking' => $result['ranking']]);
     }
 }

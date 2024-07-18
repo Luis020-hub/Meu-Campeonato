@@ -33,20 +33,29 @@ class ChampionshipService
         shuffle($teams);
 
         $quarterfinals = $this->simulateRound($teams, 4);
-        $winners = array_map(fn ($game) => $this->teamRepository->findByName($game['winner']['name']), $quarterfinals);
+        $winnersQuarterfinals = array_map(fn ($game) => $this->teamRepository->findByName($game['winner']['name']), $quarterfinals);
 
-        $semifinals = $this->simulateRound($winners, 2);
-        $winners = array_map(fn ($game) => $this->teamRepository->findByName($game['winner']['name']), $semifinals);
+        $semifinals = $this->simulateRound($winnersQuarterfinals, 2);
+        $winnersSemifinals = array_map(fn ($game) => $this->teamRepository->findByName($game['winner']['name']), $semifinals);
+        $losersSemifinals = array_map(fn ($game) => $this->teamRepository->findByName($game['loser']['name']), $semifinals);
 
-        $final = $this->simulateRound($winners, 1);
+        $final = $this->simulateRound($winnersSemifinals, 1);
+
+        $thirdPlace = $this->simulateRound($losersSemifinals, 1);
 
         $rounds = [
-            'quarterfinals' => $quarterfinals,
-            'semifinals' => $semifinals,
-            'final' => $final
+            'Quarterfinals' => $quarterfinals,
+            'Semifinals' => $semifinals,
+            'Final' => $final
         ];
 
-        return $rounds;
+        $ranking = [
+            '1st' => $final[0]['winner'],
+            '2nd' => $final[0]['loser'],
+            '3rd' => $thirdPlace[0]['winner']
+        ];
+
+        return ['rounds' => $rounds, 'ranking' => $ranking];
     }
 
     private function simulateRound(array &$teams, int $numGames): array

@@ -4,8 +4,8 @@ namespace App\Domain;
 
 class Game
 {
-    private Team $team1;
-    private Team $team2;
+    private Team $host;
+    private Team $guest;
     private int $score1;
     private int $score2;
     private ?int $penaltyScore1 = null;
@@ -13,26 +13,26 @@ class Game
     private ?Team $winner = null;
     private ?Team $loser = null;
 
-    public function __construct(Team $team1, Team $team2, int $score1, int $score2)
+    public function __construct(Team $host, Team $guest, int $score1, int $score2)
     {
-        $this->team1 = $team1;
-        $this->team2 = $team2;
+        $this->host = $host;
+        $this->guest = $guest;
         $this->score1 = $score1;
         $this->score2 = $score2;
 
-        $this->team1->addGoalsScored($score1);
-        $this->team1->addGoalsConceded($score2);
-        $this->team2->addGoalsScored($score2);
-        $this->team2->addGoalsConceded($score1);
+        $this->host->addGoalsScored($score1);
+        $this->host->addGoalsConceded($score2);
+        $this->guest->addGoalsScored($score2);
+        $this->guest->addGoalsConceded($score1);
 
         if ($score1 > $score2) {
-            $this->team1->addPoints($score1);
-            $this->winner = $team1;
-            $this->loser = $team2;
+            $this->host->addPoints($score1);
+            $this->winner = $host;
+            $this->loser = $guest;
         } elseif ($score1 < $score2) {
-            $this->team2->addPoints($score2);
-            $this->winner = $team2;
-            $this->loser = $team1;
+            $this->guest->addPoints($score2);
+            $this->winner = $guest;
+            $this->loser = $host;
         }
     }
 
@@ -42,11 +42,11 @@ class Game
         $this->penaltyScore2 = $penaltyScore2;
 
         if ($penaltyScore1 > $penaltyScore2) {
-            $this->winner = $this->team1;
-            $this->loser = $this->team2;
+            $this->winner = $this->host;
+            $this->loser = $this->guest;
         } else {
-            $this->winner = $this->team2;
-            $this->loser = $this->team1;
+            $this->winner = $this->guest;
+            $this->loser = $this->host;
         }
     }
 
@@ -58,12 +58,12 @@ class Game
     public function toArray(): array
     {
         $gameData = [
-            'team1' => [
-                'name' => $this->team1->getName(),
+            'host' => [
+                'name' => $this->host->getName(),
                 'goals' => $this->score1
             ],
-            'team2' => [
-                'name' => $this->team2->getName(),
+            'guest' => [
+                'name' => $this->guest->getName(),
                 'goals' => $this->score2
             ],
             'winner' => [
@@ -76,8 +76,8 @@ class Game
 
         if (!is_null($this->penaltyScore1) && !is_null($this->penaltyScore2)) {
             $gameData['penalties'] = [
-                'team1' => $this->penaltyScore1,
-                'team2' => $this->penaltyScore2
+                'host' => $this->penaltyScore1,
+                'guest' => $this->penaltyScore2
             ];
         }
 
