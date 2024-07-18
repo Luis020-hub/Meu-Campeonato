@@ -64,11 +64,17 @@ class ChampionshipService
 
             $game = new Game($team1, $team2, $score1, $score2);
 
-            $games[] = [
+            $gameData = [
                 'game' => $game->toArray(),
                 'winner' => $game->getWinner()->toArray(),
                 'loser' => $game->getLoser()->toArray()
             ];
+
+            if ($score1 === $score2) {
+                $gameData['penalties'] = $game->toArray()['penalties'];
+            }
+
+            $games[] = $gameData;
 
             $teams[] = $game->getWinner();
         }
