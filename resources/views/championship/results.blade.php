@@ -28,6 +28,7 @@
     <p><b>1° Lugar:</b> {{ $ranking['1st']['name'] }}</p>
     <p><b>2° Lugar:</b> {{ $ranking['2nd']['name'] }}</p>
     <p><b>3° Lugar:</b> {{ $ranking['3rd']['name'] }}</p>
+    <h3>Championship Champion <br> <b>{{ $ranking['1st']['name'] }}</b></h3>
     <a href="/">Voltar</a>
 </body>
 </html>
