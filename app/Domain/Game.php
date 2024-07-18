@@ -8,7 +8,10 @@ class Game
     private Team $team2;
     private int $score1;
     private int $score2;
-    private ?PenaltyShootout $penaltyShootout;
+    private ?int $penaltyScore1 = null;
+    private ?int $penaltyScore2 = null;
+    private ?Team $winner = null;
+    private ?Team $loser = null;
 
     public function __construct(Team $team1, Team $team2, int $score1, int $score2)
     {
@@ -16,83 +19,68 @@ class Game
         $this->team2 = $team2;
         $this->score1 = $score1;
         $this->score2 = $score2;
-        $this->penaltyShootout = null;
 
-        $this->updateTeams();
-        $this->checkForPenalties();
+        $this->team1->addGoalsScored($score1);
+        $this->team1->addGoalsConceded($score2);
+        $this->team2->addGoalsScored($score2);
+        $this->team2->addGoalsConceded($score1);
+
+        if ($score1 > $score2) {
+            $this->team1->addPoints($score1);
+            $this->winner = $team1;
+            $this->loser = $team2;
+        } elseif ($score1 < $score2) {
+            $this->team2->addPoints($score2);
+            $this->winner = $team2;
+            $this->loser = $team1;
+        }
     }
 
-    private function updateTeams(): void
+    public function setPenalties(int $penaltyScore1, int $penaltyScore2): void
     {
-        $this->team1->scoreGoal($this->score1);
-        $this->team2->scoreGoal($this->score2);
-        $this->team1->concedeGoal($this->score2);
-        $this->team2->concedeGoal($this->score1);
-    }
+        $this->penaltyScore1 = $penaltyScore1;
+        $this->penaltyScore2 = $penaltyScore2;
 
-    private function checkForPenalties(): void
-    {
-        if ($this->score1 === $this->score2) {
-            $this->penaltyShootout = new PenaltyShootout($this->team1, $this->team2);
+        if ($penaltyScore1 > $penaltyScore2) {
+            $this->winner = $this->team1;
+            $this->loser = $this->team2;
+        } else {
+            $this->winner = $this->team2;
+            $this->loser = $this->team1;
         }
     }
 
     public function getWinner(): Team
     {
-        if ($this->penaltyShootout) {
-            return $this->penaltyShootout->getWinner() === 1 ? $this->team1 : $this->team2;
-        }
-
-        if ($this->score1 > $this->score2) {
-            return $this->team1;
-        } else {
-            return $this->team2;
-        }
-    }
-
-    public function getLoser(): Team
-    {
-        return $this->getWinner() === $this->team1 ? $this->team2 : $this->team1;
-    }
-
-    public function getTeam1(): Team
-    {
-        return $this->team1;
-    }
-
-    public function getTeam2(): Team
-    {
-        return $this->team2;
-    }
-
-    public function getScore1(): int
-    {
-        return $this->score1;
-    }
-
-    public function getScore2(): int
-    {
-        return $this->score2;
+        return $this->winner;
     }
 
     public function toArray(): array
     {
-        $result = [
-            'team1' => $this->team1->getName(),
-            'team2' => $this->team2->getName(),
-            'score1' => $this->score1,
-            'score2' => $this->score2,
-            'winner' => $this->getWinner()->getName(),
-            'loser' => $this->getLoser()->getName(),
+        $gameData = [
+            'team1' => [
+                'name' => $this->team1->getName(),
+                'goals' => $this->score1
+            ],
+            'team2' => [
+                'name' => $this->team2->getName(),
+                'goals' => $this->score2
+            ],
+            'winner' => [
+                'name' => $this->winner->getName()
+            ],
+            'loser' => [
+                'name' => $this->loser->getName()
+            ]
         ];
 
-        if ($this->penaltyShootout) {
-            $result['penalties'] = [
-                'team1' => $this->penaltyShootout->getScoreTeam1(),
-                'team2' => $this->penaltyShootout->getScoreTeam2()
+        if (!is_null($this->penaltyScore1) && !is_null($this->penaltyScore2)) {
+            $gameData['penalties'] = [
+                'team1' => $this->penaltyScore1,
+                'team2' => $this->penaltyScore2
             ];
         }
 
-        return $result;
+        return $gameData;
     }
 }

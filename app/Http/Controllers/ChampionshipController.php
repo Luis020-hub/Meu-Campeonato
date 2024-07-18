@@ -49,6 +49,6 @@ class ChampionshipController extends Controller
             return response()->json(['rounds' => $rounds]);
         }
 
-        return view('championship.results', compact('rounds'));
+        return view('championship.results', ['rounds' => $rounds]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Domain\Team;
 use App\Domain\Game;
+use App\Domain\PenaltyShootout;
 use App\Repositories\TeamRepository;
 use App\Services\ScoreService;
 
@@ -64,17 +65,13 @@ class ChampionshipService
 
             $game = new Game($team1, $team2, $score1, $score2);
 
-            $gameData = [
-                'game' => $game->toArray(),
-                'winner' => $game->getWinner()->toArray(),
-                'loser' => $game->getLoser()->toArray()
-            ];
-
-            if ($score1 === $score2) {
-                $gameData['penalties'] = $game->toArray()['penalties'];
+            if ($score1 == $score2) {
+                $penaltyShootout = new PenaltyShootout();
+                list($penaltyScore1, $penaltyScore2) = $penaltyShootout->resolve($team1, $team2);
+                $game->setPenalties($penaltyScore1, $penaltyScore2);
             }
 
-            $games[] = $gameData;
+            $games[] = $game->toArray();
 
             $teams[] = $game->getWinner();
         }

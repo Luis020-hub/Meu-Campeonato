@@ -19,9 +19,19 @@ class Team
         return $this->name;
     }
 
+    public function addPoints(int $points): void
+    {
+        $this->points += $points;
+    }
+
     public function getPoints(): int
     {
         return $this->points;
+    }
+
+    public function addGoalsScored(int $goals): void
+    {
+        $this->goalsScored += $goals;
     }
 
     public function getGoalsScored(): int
@@ -29,30 +39,13 @@ class Team
         return $this->goalsScored;
     }
 
+    public function addGoalsConceded(int $goals): void
+    {
+        $this->goalsConceded += $goals;
+    }
+
     public function getGoalsConceded(): int
     {
         return $this->goalsConceded;
-    }
-
-    public function scoreGoal(int $goals): void
-    {
-        $this->goalsScored += $goals;
-        $this->points += $goals;
-    }
-
-    public function concedeGoal(int $goals): void
-    {
-        $this->goalsConceded += $goals;
-        $this->points -= $goals;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'name' => $this->name,
-            'points' => $this->points,
-            'goalsScored' => $this->goalsScored,
-            'goalsConceded' => $this->goalsConceded,
-        ];
     }
 }
