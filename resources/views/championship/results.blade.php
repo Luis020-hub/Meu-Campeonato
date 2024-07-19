@@ -37,7 +37,6 @@
         <div class="buttons">
             <p>
                 <a href="/">Back</a>
-                <a href="/simulate">Simulate Again</a>
                 <a href="/historic">Historic</a>
             </p>
         </div>

@@ -7,6 +7,7 @@ use App\Services\ChampionshipService;
 use App\Services\ValidationService;
 use App\Repositories\TeamRepository;
 use App\Services\ScoreService;
+use App\Models\Championship;
 
 class ChampionshipController extends Controller
 {
@@ -50,5 +51,22 @@ class ChampionshipController extends Controller
         }
 
         return view('championship.results', ['rounds' => $result['rounds'], 'ranking' => $result['ranking']]);
+    }
+
+    public function historic()
+    {
+        $championships = Championship::with('games')->get();
+
+        $championships->each(function ($championship) {
+            $games = $championship->games->groupBy('round');
+
+            $championship->ranking = [
+                '1st' => $games['Final']->first()->winner,
+                '2nd' => $games['Final']->first()->loser,
+                '3rd' => $games['ThirdPlace']->first()->winner ?? 'N/A'
+            ];
+        });
+
+        return view('championship.historic', ['championships' => $championships]);
     }
 }

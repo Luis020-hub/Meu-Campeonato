@@ -7,6 +7,8 @@ use App\Domain\Game;
 use App\Domain\PenaltyShootout;
 use App\Repositories\TeamRepository;
 use App\Services\ScoreService;
+use App\Models\Championship;
+use App\Models\Game as GameModel;
 
 class ChampionshipService
 {
@@ -32,16 +34,17 @@ class ChampionshipService
 
         shuffle($teams);
 
-        $quarterfinals = $this->simulateRound($teams, 4);
+        $championship = Championship::create();
+
+        $quarterfinals = $this->simulateRound($championship->id, $teams, 4, 'Quarterfinals');
         $winnersQuarterfinals = array_map(fn ($game) => $this->teamRepository->findByName($game['winner']['name']), $quarterfinals);
 
-        $semifinals = $this->simulateRound($winnersQuarterfinals, 2);
+        $semifinals = $this->simulateRound($championship->id, $winnersQuarterfinals, 2, 'Semifinals');
         $winnersSemifinals = array_map(fn ($game) => $this->teamRepository->findByName($game['winner']['name']), $semifinals);
         $losersSemifinals = array_map(fn ($game) => $this->teamRepository->findByName($game['loser']['name']), $semifinals);
 
-        $final = $this->simulateRound($winnersSemifinals, 1);
-
-        $thirdPlace = $this->simulateRound($losersSemifinals, 1);
+        $final = $this->simulateRound($championship->id, $winnersSemifinals, 1, 'Final');
+        $thirdPlace = $this->simulateRound($championship->id, $losersSemifinals, 1, 'ThirdPlace');
 
         $rounds = [
             'Quarterfinals' => $quarterfinals,
@@ -59,7 +62,7 @@ class ChampionshipService
         return ['rounds' => $rounds, 'ranking' => $ranking];
     }
 
-    private function simulateRound(array &$teams, int $numGames): array
+    private function simulateRound(int $championshipId, array &$teams, int $numGames, string $roundName): array
     {
         $games = [];
         for ($i = 0; $i < $numGames; $i++) {
@@ -82,6 +85,19 @@ class ChampionshipService
             }
 
             $games[] = $game->toArray();
+
+            GameModel::create([
+                'championship_id' => $championshipId,
+                'host' => $game->getHost()->getName(),
+                'guest' => $game->getGuest()->getName(),
+                'host_goals' => $game->getHostGoals(),
+                'guest_goals' => $game->getGuestGoals(),
+                'penalty_host_goals' => $game->getPenaltyHostGoals(),
+                'penalty_guest_goals' => $game->getPenaltyGuestGoals(),
+                'winner' => $game->getWinner()->getName(),
+                'loser' => $game->getLoser()->getName(),
+                'round' => $roundName,
+            ]);
 
             $teams[] = $game->getWinner();
         }

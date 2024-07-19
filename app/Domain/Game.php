@@ -6,42 +6,35 @@ class Game
 {
     private Team $host;
     private Team $guest;
-    private int $score1;
-    private int $score2;
-    private ?int $penaltyScore1 = null;
-    private ?int $penaltyScore2 = null;
+    private int $hostGoals;
+    private int $guestGoals;
+    private ?int $penaltyHostGoals = null;
+    private ?int $penaltyGuestGoals = null;
     private ?Team $winner = null;
     private ?Team $loser = null;
 
-    public function __construct(Team $host, Team $guest, int $score1, int $score2)
+    public function __construct(Team $host, Team $guest, int $hostGoals, int $guestGoals)
     {
         $this->host = $host;
         $this->guest = $guest;
-        $this->score1 = $score1;
-        $this->score2 = $score2;
+        $this->hostGoals = $hostGoals;
+        $this->guestGoals = $guestGoals;
 
-        $this->host->addGoalsScored($score1);
-        $this->host->addGoalsConceded($score2);
-        $this->guest->addGoalsScored($score2);
-        $this->guest->addGoalsConceded($score1);
-
-        if ($score1 > $score2) {
-            $this->host->addPoints($score1);
+        if ($hostGoals > $guestGoals) {
             $this->winner = $host;
             $this->loser = $guest;
-        } elseif ($score1 < $score2) {
-            $this->guest->addPoints($score2);
+        } elseif ($guestGoals > $hostGoals) {
             $this->winner = $guest;
             $this->loser = $host;
         }
     }
 
-    public function setPenalties(int $penaltyScore1, int $penaltyScore2): void
+    public function setPenalties(int $penaltyHostGoals, int $penaltyGuestGoals): void
     {
-        $this->penaltyScore1 = $penaltyScore1;
-        $this->penaltyScore2 = $penaltyScore2;
+        $this->penaltyHostGoals = $penaltyHostGoals;
+        $this->penaltyGuestGoals = $penaltyGuestGoals;
 
-        if ($penaltyScore1 > $penaltyScore2) {
+        if ($penaltyHostGoals > $penaltyGuestGoals) {
             $this->winner = $this->host;
             $this->loser = $this->guest;
         } else {
@@ -50,22 +43,61 @@ class Game
         }
     }
 
+    public function getHost(): Team
+    {
+        return $this->host;
+    }
+
+    public function getGuest(): Team
+    {
+        return $this->guest;
+    }
+
+    public function getHostGoals(): int
+    {
+        return $this->hostGoals;
+    }
+
+    public function getGuestGoals(): int
+    {
+        return $this->guestGoals;
+    }
+
+    public function getPenaltyHostGoals(): ?int
+    {
+        return $this->penaltyHostGoals;
+    }
+
+    public function getPenaltyGuestGoals(): ?int
+    {
+        return $this->penaltyGuestGoals;
+    }
+
     public function getWinner(): Team
     {
         return $this->winner;
     }
 
+    public function getLoser(): ?Team
+    {
+        return $this->loser;
+    }
+
     public function toArray(): array
     {
-        $gameData = [
+        return [
             'host' => [
                 'name' => $this->host->getName(),
-                'goals' => $this->score1
+                'goals' => $this->hostGoals
             ],
             'guest' => [
                 'name' => $this->guest->getName(),
-                'goals' => $this->score2
+                'goals' => $this->guestGoals
             ],
+            'penalties' => $this->penaltyHostGoals !== null && $this->penaltyGuestGoals !== null ? [
+                'host' => $this->penaltyHostGoals,
+                'guest' => $this->penaltyGuestGoals
+            ] : null,
             'winner' => [
                 'name' => $this->winner->getName()
             ],
@@ -73,14 +105,5 @@ class Game
                 'name' => $this->loser->getName()
             ]
         ];
-
-        if (!is_null($this->penaltyScore1) && !is_null($this->penaltyScore2)) {
-            $gameData['penalties'] = [
-                'host' => $this->penaltyScore1,
-                'guest' => $this->penaltyScore2
-            ];
-        }
-
-        return $gameData;
     }
 }
