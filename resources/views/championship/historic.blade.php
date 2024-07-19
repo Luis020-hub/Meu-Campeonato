@@ -9,7 +9,7 @@
         <h1>Championship History</h1>
         @foreach ($championships as $championship)
         <div class="championship">
-            <h2>Championship #{{ $championship->id }}</h2>
+            <h2><a href="/historic/{{ $championship->id }}">Championship #{{ $championship->id }}</a></h2>
             <div class="rounds container">
                 @foreach ($championship->games->groupBy('round') as $roundName => $games)
                 @if ($roundName == 'Final' || $roundName == 'ThirdPlace')

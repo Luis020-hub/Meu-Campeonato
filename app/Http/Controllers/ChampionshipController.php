@@ -69,4 +69,18 @@ class ChampionshipController extends Controller
 
         return view('championship.historic', ['championships' => $championships]);
     }
+
+    public function show($id)
+    {
+        $championship = Championship::with('games')->findOrFail($id);
+
+        $games = $championship->games->groupBy('round');
+        $ranking = [
+            '1st' => $games['Final']->first()->winner,
+            '2nd' => $games['Final']->first()->loser,
+            '3rd' => $games['ThirdPlace']->first()->winner ?? 'N/A'
+        ];
+
+        return view('championship.show', ['championship' => $championship, 'rounds' => $games, 'ranking' => $ranking]);
+    }
 }
