@@ -46,6 +46,7 @@ class ChampionshipService
         $rounds = [
             'Quarterfinals' => $quarterfinals,
             'Semifinals' => $semifinals,
+            'ThirdPlace' => $thirdPlace,
             'Final' => $final
         ];
 

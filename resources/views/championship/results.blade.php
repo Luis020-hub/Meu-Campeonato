@@ -9,7 +9,7 @@
         <h1>Championship</h1>
         <div class="rounds container">
             @foreach ($rounds as $roundName => $games)
-            <div class="rounds">
+            <div class="round">
                 <h2>{{ ucfirst($roundName) }}</h2>
                 @foreach ($games as $game)
                 <p>
