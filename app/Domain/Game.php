@@ -12,8 +12,8 @@ class Game
     private int $guestGoals;
     private ?int $penaltyHostGoals = null;
     private ?int $penaltyGuestGoals = null;
-    private ?Team $winner = null;
-    private ?Team $loser = null;
+    private Team $winner;
+    private Team $loser;
 
     public function __construct(Team $host, Team $guest, int $hostGoals, int $guestGoals)
     {
@@ -80,7 +80,7 @@ class Game
         return $this->winner;
     }
 
-    public function getLoser(): ?Team
+    public function getLoser(): Team
     {
         return $this->loser;
     }

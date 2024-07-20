@@ -2,34 +2,49 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Championship;
 use Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ChampionshipRoutesTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function it_can_access_the_home_route()
+    public function testHomeRoute()
     {
         $response = $this->get('/');
-
         $response->assertStatus(200);
-        $response->assertSee('Insira os Times');
+        $response->assertSee('Enter Teams');
     }
 
-    #[Test]
-    public function it_can_simulate_the_championship()
+    public function testSimulateChampionship()
     {
         $teams = [
-            'Team 1', 'Team 2', 'Team 3', 'Team 4',
-            'Team 5', 'Team 6', 'Team 7', 'Team 8'
+            'Team1', 'Team2', 'Team3', 'Team4',
+            'Team5', 'Team6', 'Team7', 'Team8'
         ];
 
         $response = $this->post('/simulate', ['teams' => $teams]);
+        $response->assertStatus(302);
 
+        $championship = Championship::latest()->first();
+        $this->assertNotNull($championship);
+        $response->assertRedirect(route('championship.show', ['id' => $championship->id]));
+    }
+
+    public function testHistoricRoute()
+    {
+        $response = $this->get('/historic');
         $response->assertStatus(200);
-        $response->assertSee('Resultados do Campeonato');
+        $response->assertViewIs('championship.historic');
+    }
+
+    public function testShowRoute()
+    {
+        $championship = Championship::factory()->create();
+
+        $response = $this->get(route('championship.show', ['id' => $championship->id]));
+        $response->assertStatus(200);
+        $response->assertViewIs('championship.show');
     }
 }
