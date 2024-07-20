@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Championship History</title>
-    <link rel="stylesheet" href="{{ asset('results.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles.css') }}">
 </head>
 <body>
     <div class="container">

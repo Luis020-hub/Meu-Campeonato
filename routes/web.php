@@ -6,4 +6,4 @@ use App\Http\Controllers\ChampionshipController;
 Route::get('/', [ChampionshipController::class, 'index']);
 Route::post('/simulate', [ChampionshipController::class, 'simulate']);
 Route::get('/historic', [ChampionshipController::class, 'historic']);
-Route::get('/historic/{id}', [ChampionshipController::class, 'show']);
+Route::get('/historic/{id}', [ChampionshipController::class, 'show'])->name('championship.show');

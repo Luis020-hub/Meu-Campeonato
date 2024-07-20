@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Championship Details</title>
-    <link rel="stylesheet" href="{{ asset('results.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles.css') }}">
 </head>
 <body>
     <div class="container">
@@ -36,6 +36,7 @@
         <p><b>3° Lugar: {{ $ranking['3rd'] }}</b></p>
         <div class="buttons">
             <p>
+                <a href="/">Back to start</a>
                 <a href="/historic">Back to History</a>
             </p>
         </div>

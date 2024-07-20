@@ -46,11 +46,15 @@ class ChampionshipController extends Controller
 
         $result = $this->championshipService->simulateChampionship($teams);
 
+        $championship = Championship::latest()->first();
+
+        session(['last_simulation' => $result, 'last_teams' => $teams]);
+
         if ($request->expectsJson()) {
             return response()->json($result);
         }
 
-        return view('championship.results', ['rounds' => $result['rounds'], 'ranking' => $result['ranking']]);
+        return redirect()->route('championship.show', ['id' => $championship->id]);
     }
 
     public function historic()
