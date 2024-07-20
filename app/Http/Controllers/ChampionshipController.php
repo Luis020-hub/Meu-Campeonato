@@ -61,9 +61,9 @@ class ChampionshipController extends Controller
             $games = $championship->games->groupBy('round');
 
             $championship->ranking = [
-                '1st' => $games['Final']->first()->winner,
-                '2nd' => $games['Final']->first()->loser,
-                '3rd' => $games['ThirdPlace']->first()->winner ?? 'N/A'
+                '1st' => $games->has('Final') ? $games['Final']->first()->winner : 'N/A',
+                '2nd' => $games->has('Final') ? $games['Final']->first()->loser : 'N/A',
+                '3rd' => $games->has('ThirdPlace') ? $games['ThirdPlace']->first()->winner : 'N/A'
             ];
         });
 
@@ -76,9 +76,9 @@ class ChampionshipController extends Controller
 
         $games = $championship->games->groupBy('round');
         $ranking = [
-            '1st' => $games['Final']->first()->winner,
-            '2nd' => $games['Final']->first()->loser,
-            '3rd' => $games['ThirdPlace']->first()->winner ?? 'N/A'
+            '1st' => $games->has('Final') ? $games['Final']->first()->winner : 'N/A',
+            '2nd' => $games->has('Final') ? $games['Final']->first()->loser : 'N/A',
+            '3rd' => $games->has('ThirdPlace') ? $games['ThirdPlace']->first()->winner : 'N/A'
         ];
 
         return view('championship.show', ['championship' => $championship, 'rounds' => $games, 'ranking' => $ranking]);

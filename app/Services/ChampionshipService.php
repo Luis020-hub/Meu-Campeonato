@@ -23,12 +23,9 @@ class ChampionshipService
 
     public function simulateChampionship(array $teamNames): array
     {
-        $this->teamRepository->clear();
-
         $teams = [];
         foreach ($teamNames as $teamName) {
-            $team = new Team($teamName);
-            $this->teamRepository->save($team);
+            $team = $this->teamRepository->findOrCreateByName($teamName);
             $teams[] = $team;
         }
 
@@ -88,14 +85,14 @@ class ChampionshipService
 
             GameModel::create([
                 'championship_id' => $championshipId,
-                'host' => $game->getHost()->getName(),
-                'guest' => $game->getGuest()->getName(),
+                'host' => $game->getHost()->name,
+                'guest' => $game->getGuest()->name,
                 'host_goals' => $game->getHostGoals(),
                 'guest_goals' => $game->getGuestGoals(),
                 'penalty_host_goals' => $game->getPenaltyHostGoals(),
                 'penalty_guest_goals' => $game->getPenaltyGuestGoals(),
-                'winner' => $game->getWinner()->getName(),
-                'loser' => $game->getLoser()->getName(),
+                'winner' => $game->getWinner()->name,
+                'loser' => $game->getLoser()->name,
                 'round' => $roundName,
             ]);
 

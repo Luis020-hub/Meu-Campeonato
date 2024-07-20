@@ -2,6 +2,8 @@
 
 namespace App\Domain;
 
+use App\Models\Team;
+
 class Game
 {
     private Team $host;
@@ -87,11 +89,11 @@ class Game
     {
         return [
             'host' => [
-                'name' => $this->host->getName(),
+                'name' => $this->host->name,
                 'goals' => $this->hostGoals
             ],
             'guest' => [
-                'name' => $this->guest->getName(),
+                'name' => $this->guest->name,
                 'goals' => $this->guestGoals
             ],
             'penalties' => $this->penaltyHostGoals !== null && $this->penaltyGuestGoals !== null ? [
@@ -99,10 +101,10 @@ class Game
                 'guest' => $this->penaltyGuestGoals
             ] : null,
             'winner' => [
-                'name' => $this->winner->getName()
+                'name' => $this->winner->name
             ],
             'loser' => [
-                'name' => $this->loser->getName()
+                'name' => $this->loser->name
             ]
         ];
     }

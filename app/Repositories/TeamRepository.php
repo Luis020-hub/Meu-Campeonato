@@ -2,34 +2,37 @@
 
 namespace App\Repositories;
 
-use App\Domain\Team;
+use App\Models\Team;
 
 class TeamRepository
 {
-    private array $teams = [];
-
     public function save(Team $team): void
     {
-        $this->teams[] = $team;
+        $team->save();
     }
 
     public function findAll(): array
     {
-        return $this->teams;
+        return Team::all()->toArray();
     }
 
     public function findByName(string $name): ?Team
     {
-        foreach ($this->teams as $team) {
-            if ($team->getName() === $name) {
-                return $team;
-            }
+        return Team::where('name', $name)->first();
+    }
+
+    public function findOrCreateByName(string $name): Team
+    {
+        $team = $this->findByName($name);
+        if (!$team) {
+            $team = new Team(['name' => $name]);
+            $this->save($team);
         }
-        return null;
+        return $team;
     }
 
     public function clear(): void
     {
-        $this->teams = [];
+        Team::truncate();
     }
 }
