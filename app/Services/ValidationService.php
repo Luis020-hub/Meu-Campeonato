@@ -10,7 +10,7 @@ class ValidationService
 
         if (count($teams) !== 8) {
             $response['isValid'] = false;
-            $response['message'] = 'Você deve fornecer exatamente 8 times.';
+            $response['message'] = 'You must enter with 8 teams.';
         }
 
         return $response;
