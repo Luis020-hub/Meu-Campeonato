@@ -10,7 +10,7 @@ class ScoreService
     {
         $output = [];
         $returnVar = null;
-        $pythonPath = 'python';
+        $pythonPath = 'python3';
         $command = $pythonPath . ' ' . base_path('teste.py') . ' 2>&1';
 
         exec($command, $output, $returnVar);
