@@ -90,7 +90,7 @@ class ChampionshipController extends Controller
             if ($request->expectsJson()) {
                 return response()->json(['message' => $message], 200);
             }
-            return view('championship.historic', compact('message', 'championships'));  // Agora passa 'championships' mesmo que vazio
+            return view('championship.historic', compact('message', 'championships'));
         }
 
         if ($request->expectsJson()) {
@@ -102,22 +102,26 @@ class ChampionshipController extends Controller
 
     public function show(Request $request, $id)
     {
-        $championship = Championship::with('games')->find($id);
-        if (!$championship) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'This championship does not exist'], 404);
-            }
-            return redirect()->back()->withErrors('This championship does not exist');
-        }
+        try {
+            $championship = Championship::with(['games.host', 'games.guest'])->findOrFail($id);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            $message = 'This championship does not exist';
 
+            if ($request->expectsJson()) {
+                return response()->json(['error' => $message], 404);
+            }
+
+            return redirect()->back()->withErrors($message);
+        }
+        
         $games = $championship->games->map(function ($game) {
             return (object) [
                 'id' => $game->id,
                 'championship_id' => $game->championship_id,
                 'round' => $game->round,
-                'host_id' => $game->host_id,
+                'host' => $game->host->name,
                 'host_goals' => $game->host_goals,
-                'guest_id' => $game->guest_id,
+                'guest' => $game->guest->name,
                 'guest_goals' => $game->guest_goals,
                 'penalty_host_goals' => $game->penalty_host_goals,
                 'penalty_guest_goals' => $game->penalty_guest_goals,
@@ -147,7 +151,7 @@ class ChampionshipController extends Controller
 
         return view('championship.show', [
             'championship' => $championship,
-            'rounds' => $games,
+            'rounds' => $games->groupBy('round'),
             'ranking' => $ranking
         ]);
     }

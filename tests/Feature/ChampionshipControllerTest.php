@@ -48,11 +48,19 @@ class ChampionshipControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testShow()
+    public function testDestroy()
     {
-        $championship = Championship::factory()->has(Game::factory()->count(3))->create();
+        $championship = Championship::factory()
+            ->has(Game::factory()->count(3))
+            ->create();
 
-        $response = $this->get("/historic/{$championship->id}");
-        $response->assertStatus(200);
+        $response = $this->delete("/historic/{$championship->id}");
+
+        $response->assertStatus(302);
+        $response->assertSessionHas('success', 'Championship deleted successfully');
+
+        $this->assertDatabaseMissing('championships', [
+            'id' => $championship->id
+        ]);
     }
 }

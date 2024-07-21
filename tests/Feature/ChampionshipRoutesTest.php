@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Championship;
+use App\Models\Game;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -46,5 +47,21 @@ class ChampionshipRoutesTest extends TestCase
         $response = $this->get(route('championship.show', ['id' => $championship->id]));
         $response->assertStatus(200);
         $response->assertViewIs('championship.show');
+    }
+
+    public function testDestroyRoute()
+    {
+        $championship = Championship::factory()
+            ->has(Game::factory()->count(3))
+            ->create();
+
+        $response = $this->delete(route('championship.destroy', ['id' => $championship->id]));
+
+        $response->assertStatus(302);
+        $response->assertSessionHas('success', 'Championship deleted successfully');
+
+        $this->assertDatabaseMissing('championships', [
+            'id' => $championship->id
+        ]);
     }
 }
