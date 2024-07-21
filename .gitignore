@@ -40,9 +40,7 @@ nova
 # Laravel storage
 /storage/debugbar
 /storage/framework/cache/data
-/storage/framework/sessions
 /storage/framework/testing
-/storage/framework/views
 /storage/logs
 /storage/app/public
 
