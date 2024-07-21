@@ -77,7 +77,7 @@ class ChampionshipService
 
             if ($score1 == $score2) {
                 $penaltyShootout = new PenaltyShootout();
-                list($penaltyScore1, $penaltyScore2) = $penaltyShootout->resolve($team1, $team2);
+                list($penaltyScore1, $penaltyScore2) = $penaltyShootout->resolve();
                 $game->setPenalties($penaltyScore1, $penaltyScore2);
             }
 
