@@ -11,8 +11,8 @@ class Game extends Model
 
     protected $fillable = [
         'championship_id',
-        'host',
-        'guest',
+        'host_id',
+        'guest_id',
         'host_goals',
         'guest_goals',
         'penalty_host_goals',
@@ -25,5 +25,15 @@ class Game extends Model
     public function championship()
     {
         return $this->belongsTo(Championship::class);
+    }
+
+    public function host()
+    {
+        return $this->belongsTo(Team::class, 'host_id');
+    }
+
+    public function guest()
+    {
+        return $this->belongsTo(Team::class, 'guest_id');
     }
 }

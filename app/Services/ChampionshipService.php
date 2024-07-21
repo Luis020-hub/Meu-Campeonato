@@ -85,8 +85,8 @@ class ChampionshipService
 
             GameModel::create([
                 'championship_id' => $championshipId,
-                'host' => $game->getHost()->name,
-                'guest' => $game->getGuest()->name,
+                'host_id' => $game->getHost()->id,
+                'guest_id' => $game->getGuest()->id,
                 'host_goals' => $game->getHostGoals(),
                 'guest_goals' => $game->getGuestGoals(),
                 'penalty_host_goals' => $game->getPenaltyHostGoals(),

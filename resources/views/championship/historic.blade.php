@@ -19,9 +19,9 @@
                     <h3>{{ ucfirst($roundName) }}</h3>
                     @foreach ($games as $game)
                     <p>
-                        <b>{{ $game->host }} ({{ $game->host_goals }})
+                        <b>{{ $game->host->name }} ({{ $game->host_goals }})
                             vs
-                            ({{ $game->guest_goals }}) {{ $game->guest }}</b>
+                            ({{ $game->guest_goals }}) {{ $game->guest->name }}</b>
                         @if($game->penalty_host_goals !== null && $game->penalty_guest_goals !== null)
                         <br>
                         <b class="penalties">Penalty Shootout: {{ $game->penalty_host_goals }} - {{ $game->penalty_guest_goals }}</b>
@@ -39,9 +39,9 @@
                     <h3>Third Place</h3>
                     @foreach ($championship->games->where('round', 'ThirdPlace') as $game)
                     <p>
-                        <b>{{ $game->host }} ({{ $game->host_goals }})
+                        <b>{{ $game->host->name }} ({{ $game->host_goals }})
                             vs
-                            ({{ $game->guest_goals }}) {{ $game->guest }}</b>
+                            ({{ $game->guest_goals }}) {{ $game->guest->name }}</b>
                         @if($game->penalty_host_goals !== null && $game->penalty_guest_goals !== null)
                         <br>
                         <b class="penalties">Penalty Shootout: {{ $game->penalty_host_goals }} - {{ $game->penalty_guest_goals }}</b>
@@ -58,9 +58,9 @@
                     <h3>Final</h3>
                     @foreach ($championship->games->where('round', 'Final') as $game)
                     <p>
-                        <b>{{ $game->host }} ({{ $game->host_goals }})
+                        <b>{{ $game->host->name }} ({{ $game->host_goals }})
                             vs
-                            ({{ $game->guest_goals }}) {{ $game->guest }}</b>
+                            ({{ $game->guest_goals }}) {{ $game->guest->name }}</b>
                         @if($game->penalty_host_goals !== null && $game->penalty_guest_goals !== null)
                         <br>
                         <b class="penalties">Penalty Shootout: {{ $game->penalty_host_goals }} - {{ $game->penalty_guest_goals }}</b>
