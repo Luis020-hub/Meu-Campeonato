@@ -87,4 +87,14 @@ class ChampionshipController extends Controller
 
         return view('championship.show', ['championship' => $championship, 'rounds' => $games, 'ranking' => $ranking]);
     }
+
+    public function destroy($id)
+    {
+        $championship = Championship::find($id);
+        if ($championship) {
+            $championship->delete();
+        }
+
+        return redirect()->back()->with('success', 'Championship deleted successfully');
+    }
 }

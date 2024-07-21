@@ -3,13 +3,22 @@
 <head>
     <title>Championship History</title>
     <link rel="stylesheet" href="{{ asset('styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <h1>Championship History</h1>
         @foreach ($championships as $championship)
         <div class="championship">
-            <h2><a href="/historic/{{ $championship->id }}">Championship #{{ $championship->id }}</a></h2>
+            <h2><a href="/historic/{{ $championship->id }}">Championship #{{ $championship->id }}</a>
+                <form action="{{ route('championship.destroy', $championship->id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" style="background:none; border:none; padding:0; cursor:pointer;">
+                        <i class="fa fa-trash" style="color: red;"></i>
+                    </button>
+                </form>
+            </h2>
             <div class="rounds container">
                 @foreach ($championship->games->groupBy('round') as $roundName => $games)
                 @if ($roundName == 'Final' || $roundName == 'ThirdPlace')

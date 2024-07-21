@@ -7,3 +7,4 @@ Route::get('/', [ChampionshipController::class, 'index']);
 Route::post('/simulate', [ChampionshipController::class, 'simulate']);
 Route::get('/historic', [ChampionshipController::class, 'historic']);
 Route::get('/historic/{id}', [ChampionshipController::class, 'show'])->name('championship.show');
+Route::delete('/historic/{id}', [ChampionshipController::class, 'destroy'])->name('championship.destroy');
