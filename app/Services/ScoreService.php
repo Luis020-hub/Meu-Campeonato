@@ -10,8 +10,9 @@ class ScoreService
     {
         $output = [];
         $returnVar = null;
-        $pythonPath = 'python3';
-        $command = $pythonPath . ' ' . base_path('teste.py') . ' 2>&1';
+        $pythonPath = 'python';
+        $scriptPath = base_path('teste.py');
+        $command = "$pythonPath $scriptPath 2>&1";
 
         exec($command, $output, $returnVar);
 
@@ -20,7 +21,11 @@ class ScoreService
         Log::info('Python script return var:', [$returnVar]);
 
         if ($returnVar !== 0) {
-            Log::error('Python script failed to execute', ['output' => $output, 'return_var' => $returnVar]);
+            Log::error('Python script failed to execute', [
+                'command' => $command,
+                'output' => $output,
+                'return_var' => $returnVar
+            ]);
             throw new \Exception('Python script failed to execute');
         }
 

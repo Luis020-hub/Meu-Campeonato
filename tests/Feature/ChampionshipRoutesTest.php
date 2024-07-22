@@ -18,6 +18,13 @@ class ChampionshipRoutesTest extends TestCase
         $response->assertSee('Enter Teams');
     }
 
+    public function testCsrfTokenRoute()
+    {
+        $response = $this->get('/getToken');
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['csrf_token']);
+    }
+
     public function testSimulateChampionship()
     {
         $teams = [
