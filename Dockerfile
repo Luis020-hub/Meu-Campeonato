@@ -1,7 +1,7 @@
 # Escolher a imagem oficial do PHP com Apache que suporta PHP 8.2
 FROM php:8.2-apache
 
-# Instalar dependências necessárias para PostgreSQL, Python e outras extensões do PHP
+# Instalar dependências necessárias para o Python e outras extensões do PHP
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     libpq-dev \
     postgresql-client \
-    python3 \
+    python-is-python3 \
     python3-pip \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd pdo_pgsql
 
