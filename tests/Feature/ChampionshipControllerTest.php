@@ -5,8 +5,6 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Championship;
-use App\Models\Game;
-use App\Models\Team;
 
 class ChampionshipControllerTest extends TestCase
 {
@@ -19,48 +17,19 @@ class ChampionshipControllerTest extends TestCase
         $response->assertSee('Enter Teams');
     }
 
-    public function testSimulateValidation()
+    public function testShowChampionship()
     {
-        $response = $this->post('/simulate', ['teams' => ['Team 1', 'Team 2']]);
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['teams']);
-    }
+        $championship = Championship::factory()->create();
 
-    public function testSimulateChampionship()
-    {
-        $teams = Team::factory()->count(8)->create();
-
-        $teamNames = $teams->pluck('name')->toArray();
-
-        $response = $this->post('/simulate', ['teams' => $teamNames]);
-
-        $response->assertStatus(302);
-        $this->assertDatabaseHas('championships', [
-            'id' => Championship::latest()->first()->id
-        ]);
-    }
-
-    public function testHistoric()
-    {
-        Championship::factory()->has(Game::factory()->count(3))->create();
-
-        $response = $this->get('/historic');
+        $response = $this->get('/historic/' . $championship->id);
         $response->assertStatus(200);
+        $response->assertViewHas('championship');
     }
 
-    public function testDestroy()
+    public function testShowNonExistentChampionship()
     {
-        $championship = Championship::factory()
-            ->has(Game::factory()->count(3))
-            ->create();
-
-        $response = $this->delete("/historic/{$championship->id}");
-
+        $response = $this->get('/historic/999');
         $response->assertStatus(302);
-        $response->assertSessionHas('success', 'Championship deleted successfully');
-
-        $this->assertDatabaseMissing('championships', [
-            'id' => $championship->id
-        ]);
+        $response->assertSessionHasErrors();
     }
 }

@@ -2,26 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Services\ChampionshipService;
-use App\Services\ValidationService;
-use App\Repositories\TeamRepository;
-use App\Services\ScoreService;
 use App\Models\Championship;
+use Illuminate\Http\Request;
 
 class ChampionshipController extends Controller
 {
-    private ChampionshipService $championshipService;
-    private ValidationService $validationService;
-
-    public function __construct()
-    {
-        $teamRepository = new TeamRepository();
-        $scoreService = new ScoreService();
-        $this->championshipService = new ChampionshipService($teamRepository, $scoreService);
-        $this->validationService = new ValidationService();
-    }
-
     public function index()
     {
         $championships = Championship::all();
@@ -29,75 +14,6 @@ class ChampionshipController extends Controller
             return view('championship.index')->with('message', 'There is no championship simulated');
         }
         return view('championship.index', ['championships' => $championships]);
-    }
-
-    public function simulate(Request $request)
-    {
-        $request->validate([
-            'teams' => 'required|array|size:8',
-            'teams.*' => 'required|string'
-        ]);
-
-        $teams = $request->input('teams');
-
-        $validationResult = $this->validationService->validateTeams($teams);
-        if (!$validationResult['isValid']) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => $validationResult['message']], 422);
-            }
-            return redirect('/')->withErrors($validationResult['message']);
-        }
-
-        $result = $this->championshipService->simulateChampionship($teams);
-
-        $championship = Championship::latest()->first();
-
-        session(['last_simulation' => $result, 'last_teams' => $teams]);
-
-        if ($request->expectsJson()) {
-            return response()->json([
-                'championship_id' => $championship->id,
-                'result' => $result
-            ]);
-        }
-
-        return redirect()->route('championship.show', ['id' => $championship->id]);
-    }
-
-    public function historic(Request $request)
-    {
-        $championships = Championship::with('games')->get()->map(function ($championship) {
-            $games = $championship->games;
-
-            $finalGame = $games->where('round', 'Final')->first();
-            $thirdPlaceGame = $games->where('round', 'ThirdPlace')->first();
-
-            $ranking = [
-                '1st' => $finalGame ? $finalGame->winner : 'N/A',
-                '2nd' => $finalGame ? $finalGame->loser : 'N/A',
-                '3rd' => $thirdPlaceGame ? $thirdPlaceGame->winner : 'N/A'
-            ];
-
-            return (object) [
-                'id' => $championship->id,
-                'ranking' => $ranking,
-                'games' => $games
-            ];
-        });
-
-        if ($championships->isEmpty()) {
-            $message = 'No championships have been simulated yet';
-            if ($request->expectsJson()) {
-                return response()->json(['message' => $message], 200);
-            }
-            return view('championship.historic', compact('message', 'championships'));
-        }
-
-        if ($request->expectsJson()) {
-            return response()->json($championships);
-        }
-
-        return view('championship.historic', ['championships' => $championships]);
     }
 
     public function show(Request $request, $id)
@@ -113,7 +29,7 @@ class ChampionshipController extends Controller
 
             return redirect()->back()->withErrors($message);
         }
-        
+
         $games = $championship->games->map(function ($game) {
             return (object) [
                 'id' => $game->id,
@@ -154,24 +70,5 @@ class ChampionshipController extends Controller
             'rounds' => $games->groupBy('round'),
             'ranking' => $ranking
         ]);
-    }
-
-    public function destroy(Request $request, $id)
-    {
-        $championship = Championship::find($id);
-        if (!$championship) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Championship does not exist'], 404);
-            }
-            return redirect()->back()->withErrors('Championship does not exist');
-        }
-
-        $championship->delete();
-
-        if ($request->expectsJson()) {
-            return response()->json(['success' => 'Championship deleted successfully']);
-        }
-
-        return redirect()->back()->with('success', 'Championship deleted successfully');
     }
 }
