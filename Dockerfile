@@ -32,8 +32,12 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Criar e copiar o script de entrada
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Expor a porta 80 para acessar o Apache
 EXPOSE 80
 
-# Comando para iniciar o Apache quando o container for iniciado
-CMD ["apache2-foreground"]
+# Usar o script de entrada como comando inicial
+CMD ["entrypoint.sh"]
