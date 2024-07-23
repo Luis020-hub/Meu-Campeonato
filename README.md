@@ -33,25 +33,20 @@
 git clone https://github.com/Luis020-hub/meu-campeonato.git
 ```
 
-### 2. Executar o composer.
-- Abra seu terminal do editor.
+### 2. Buildar a aplicação.
 ```bash
-cd meu-campeonato
+cd meu-projeto
 ```
-```bash
-Composer install
-```
-Logo em seguida será instalado todas as depêndencias do projeto.
-
-### 3. Buildar a aplicação.
 ``` bash
 docker-compose build
 ```
 
-### 4. Executar a aplicação.
+### 3. Executar a aplicação.
 ```bash
 docker-compose up
 ```
+obs: Rode ```composer install```
+caso não por algum motivo não funcione mesmo, o composer estando na config do docker.
 
 ### 5. Acessando Meu Campeonato.
 - Você pode acessar os links:
